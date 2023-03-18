@@ -73,9 +73,13 @@ const Signin = (props) => {
         if (response.data.error) {
             alert(response.data.error);
         } else {
-            props.getAllQuestionList();
-            props.setCurrentQuestionIndex(0)
-            navigate('/quiz')
+            const { user } = response.data;
+            if (user) {
+                localStorage.setItem('user', JSON.stringify(user))
+                props.getAllQuestionList();
+                props.setCurrentQuestionIndex(0)
+                navigate('/quiz')
+            }
         }
     }
     return (

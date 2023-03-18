@@ -20,7 +20,7 @@ export default function Result(props) {
             return q.correctAnswer === parseInt(answers[i]);
         }).length;
     }, [answers]);
-    
+
     return (
         <Container>
 

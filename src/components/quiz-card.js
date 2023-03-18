@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
@@ -22,8 +22,10 @@ const Container = styled(FormGroup)(`
 
 
 export default function QuizCard(props) {
-    const { question = {}, setQuestions, questionNumber, submitAnswer } = props;
+    const { question = {}, setQuestions, questionNumber, submitAnswer, getAllQuestionList } = props;
     const [value, setValue] = React.useState(null);
+    const user = window.localStorage.getItem('user') ? window.localStorage.getItem('user') : '';
+
 
     const navigate = useNavigate();
 
@@ -36,9 +38,18 @@ export default function QuizCard(props) {
         setValue(null);
     }
 
-    // React.useEffect(() => {
-    //     getAllQuestionList();
-    // }, [])
+    const handleLogout = () => {
+        navigate('/');
+        setQuestions([]);
+        window.localStorage.removeItem('user')
+    }
+
+    useEffect(() => {
+        if (user) {
+            getAllQuestionList();
+        }
+    }, [user]);
+
     return (
         <Container >
             <Card variant="outlined" style={{ borderColor: '#1976d2' }}>
@@ -54,7 +65,7 @@ export default function QuizCard(props) {
 
                     <FormControl>
                         <RadioGroup name="radio-group-quiz" value={value} onChange={handleChangeRadio}>
-                            {question.options.map((o, i) => {
+                            {question.options && question.options.map((o, i) => {
                                 return <FormControlLabel key={i + 1} value={i + 1} control={<Radio />} label={o.description} />
                             })}
                         </RadioGroup>
@@ -67,10 +78,7 @@ export default function QuizCard(props) {
                 </CardActions>
             </Card>
             <FormControl>
-                <Button variant='contained' onClick={() => {
-                    navigate('/');
-                    setQuestions([]);
-                }}>Logout</Button>
+                <Button variant='contained' onClick={handleLogout}>Logout</Button>
             </FormControl>
         </Container>
     );

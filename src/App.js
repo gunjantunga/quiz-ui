@@ -3,7 +3,6 @@ import './App.css';
 import Signup from './components/sign-up';
 import Signin from './components/sign-in';
 import QuizCard from './components/quiz-card';
-// import questions from './data/questions';
 import Result from './components/result';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { getAllQuestions } from './services';
@@ -13,7 +12,7 @@ function App() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState([]);
   const [questions, setQuestions] = useState([]);
-  const finishedQuiz = currentQuestionIndex === questions.length;
+  const [finishedQuiz, setFinishedQuiz] = useState(false);
   const currentQuestion = questions[currentQuestionIndex];
 
   const goToNext = () => {
@@ -46,8 +45,10 @@ function App() {
   }
 
   useEffect(() => {
-    getAllQuestionList();
-  }, [])
+    if (questions.length) {
+      setFinishedQuiz(currentQuestionIndex === questions.length);
+    }
+  }, [currentQuestionIndex])
 
   return (
     <div className="App">
@@ -62,15 +63,15 @@ function App() {
             restartQuiz={restartQuiz}
             answers={answers}
             questions={questions}
-          /> : <QuizCard
-            question={currentQuestion}
-            questions={questions}
-            questionNumber={currentQuestionIndex + 1}
-            submitAnswer={submitAnswer}
-            setQuestions={setQuestions}
-            getAllQuestionList={getAllQuestionList}
-
-          />}
+          /> :
+            <QuizCard
+              question={currentQuestion}
+              questionNumber={currentQuestionIndex + 1}
+              submitAnswer={submitAnswer}
+              setQuestions={setQuestions}
+              getAllQuestionList={getAllQuestionList}
+            />
+          }
           />
         </Routes>
       </Router>
